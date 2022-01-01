@@ -4,6 +4,8 @@ import * as API from "../api/workoutsAPI";
 export const GET_WORKOUTS_BEGIN = "GET_WOURKOUTS_BEGIN";
 export const GET_WORKOUTS_SUCCESS = "GET_WORKOUTS_SUCCESS";
 export const GET_WORKOUTS_FAILURE = "GET_WORKOUTS_FAILURE";
+export const SAVE_EXERCISES = "SAVE_EXERCISES";
+export const LOAD_EXERCISE = "LOAD_EXERCISE";
 
 export function getWorkoutsSuccess(workoutsResponse) {
   return {
@@ -28,3 +30,17 @@ export function getWorkouts() {
       .catch((error) => dispatch(getWorkoutsFailure(error)));
   };
 }
+
+export const saveExercises = (exercises) => {
+  return {
+    type: SAVE_EXERCISES,
+    exercises: exercises,
+  };
+};
+
+export const loadExercise = (exerciseIndex) => {
+  return {
+    type: LOAD_EXERCISE,
+    exerciseIndex,
+  };
+};

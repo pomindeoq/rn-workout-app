@@ -3,6 +3,8 @@ import {
   GET_WORKOUTS_BEGIN,
   GET_WORKOUTS_SUCCESS,
   GET_WORKOUTS_FAILURE,
+  SAVE_EXERCISES,
+  LOAD_EXERCISE,
 } from "./actions";
 
 const initialWorkoutsState = {
@@ -39,6 +41,32 @@ export function workoutsReducer(
   }
 }
 
+const initialExercisesState = {
+  currentExercise: {},
+  exercises: [],
+};
+
+export function exercisesReducer(
+  state = initialExercisesState,
+  action: AnyAction
+) {
+  switch (action.type) {
+    case SAVE_EXERCISES:
+      return {
+        ...state,
+        exercises: action.exercises,
+      };
+    case LOAD_EXERCISE:
+      return {
+        ...state,
+        currentExercise: state.exercises[action.exerciseIndex],
+      };
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   workouts: workoutsReducer,
+  exercises: exercisesReducer,
 });

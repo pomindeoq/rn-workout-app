@@ -6,7 +6,7 @@ import { getWorkouts } from "../redux/actions";
 
 const WorkoutsHomeScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
-  let { workoutsPlans, loading, error } = useSelector(
+  const { workoutsPlans, loading, error } = useSelector(
     (state) => state.workouts
   );
 
