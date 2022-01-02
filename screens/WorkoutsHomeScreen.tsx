@@ -4,7 +4,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import { getWorkouts } from "../redux/actions";
 
-const WorkoutsHomeScreen = ({ navigation }: any) => {
+const WorkoutsHomeScreen = ({ navigation, route }: any) => {
   const dispatch = useDispatch();
   const { workoutsPlans, loading, error } = useSelector(
     (state) => state.workouts
@@ -12,7 +12,7 @@ const WorkoutsHomeScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     dispatch(getWorkouts());
-  }, [dispatch]);
+  }, []);
 
   const selectPlan = (plan): void => {
     navigation.navigate("Workout", {
