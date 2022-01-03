@@ -3,5 +3,4 @@
 expo 
 redux
 
-npm install 
-expo start 
+npm install && expo start 
