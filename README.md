@@ -1,6 +1,5 @@
 # rn-workout-app
 
-expo 
-redux
+expo, redux
 
 npm install && expo start 
