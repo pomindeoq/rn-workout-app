@@ -6,11 +6,12 @@ export async function getWorkouts() {
   try {
     const res = await axios.get(url);
     const workoutPlans = [];
+    // implement more workout plans here
     workoutPlans.push(res.data.data);
     return {
       data: workoutPlans,
     };
   } catch (err) {
-    return await Promise.reject(err);
+    return Promise.reject(err);
   }
 }

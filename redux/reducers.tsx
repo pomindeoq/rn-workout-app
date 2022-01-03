@@ -1,13 +1,19 @@
 import { combineReducers, AnyAction } from "redux";
 import {
+  Exercise,
+  InitialExercisesState,
+  InitialWorkoutsState,
+} from "../models/interfaces";
+import {
   GET_WORKOUTS_BEGIN,
   GET_WORKOUTS_SUCCESS,
   GET_WORKOUTS_FAILURE,
   SAVE_EXERCISES,
   LOAD_EXERCISE,
+  SET_PROGRESS,
 } from "./actions";
 
-const initialWorkoutsState = {
+const initialWorkoutsState: InitialWorkoutsState = {
   workoutsPlans: [],
   loading: false,
   error: null,
@@ -16,7 +22,7 @@ const initialWorkoutsState = {
 export function workoutsReducer(
   state = initialWorkoutsState,
   action: AnyAction
-) {
+): InitialWorkoutsState {
   switch (action.type) {
     case GET_WORKOUTS_BEGIN:
       return {
@@ -41,7 +47,7 @@ export function workoutsReducer(
   }
 }
 
-const initialExercisesState = {
+const initialExercisesState: InitialExercisesState = {
   currentExercise: {},
   exercises: [],
 };
@@ -49,7 +55,7 @@ const initialExercisesState = {
 export function exercisesReducer(
   state = initialExercisesState,
   action: AnyAction
-) {
+): InitialExercisesState {
   switch (action.type) {
     case SAVE_EXERCISES:
       return {
@@ -60,6 +66,15 @@ export function exercisesReducer(
       return {
         ...state,
         currentExercise: state.exercises[action.exerciseIndex],
+      };
+    case SET_PROGRESS:
+      return {
+        ...state,
+        exercises: state.exercises.map((exercise: Exercise) =>
+          exercise.id === action.id
+            ? { ...exercise, progress: action.progress }
+            : exercise
+        ),
       };
     default:
       return state;

@@ -1,37 +1,76 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getWorkouts } from "../redux/actions";
+import WorkoutPlan from "../components/WorkoutPlan";
+import * as interfaces from "../models/interfaces";
+import { InitialWorkoutsState } from "../models/interfaces";
 
-const WorkoutsHomeScreen = ({ navigation, route }: any) => {
+const WorkoutsHomeScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
-  const { workoutsPlans, loading, error } = useSelector(
-    (state) => state.workouts
+  const { workoutsPlans, loading, error }: InitialWorkoutsState = useSelector(
+    (state: InitialWorkoutsState) => state.workouts
   );
 
   useEffect(() => {
     dispatch(getWorkouts());
   }, []);
 
-  const selectPlan = (plan): void => {
+  const selectPlan = (plan: interfaces.WorkoutPlan): void => {
     navigation.navigate("Workout", {
       workouts: plan.questions,
     });
   };
 
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.info}>An error occurred!</Text>
+        <View>
+          <Text style={styles.error}>{error.toString()}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#aa01fe" />
+      </View>
+    );
+  }
+
+  if (!loading && workoutsPlans.length === 0 && !error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.info}>No workouts found!</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.center}>
+    <View style={styles.container}>
       <Text style={styles.title}>Wourkout Plans</Text>
-      {workoutsPlans.map((plan) => (
-        <TouchableOpacity
-          style={[styles.item, styles.center]}
-          key={plan.title}
-          onPress={() => selectPlan(plan)}
-        >
-          <Text style={styles.text}>{plan.name}</Text>
-        </TouchableOpacity>
-      ))}
+      <FlatList
+        style={styles.list}
+        data={workoutsPlans}
+        renderItem={(plan) => (
+          <WorkoutPlan
+            workoutPlan={plan.item}
+            onPress={() => {
+              selectPlan(plan.item);
+            }}
+          />
+        )}
+        keyExtractor={(item) => item.name}
+      />
     </View>
   );
 };
@@ -39,7 +78,8 @@ const WorkoutsHomeScreen = ({ navigation, route }: any) => {
 export default WorkoutsHomeScreen;
 
 const styles = StyleSheet.create({
-  center: {
+  container: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -59,5 +99,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+    marginTop: 20,
+  },
+  list: {
+    margin: 20,
+    marginBottom: 0,
+  },
+  error: {
+    marginTop: 20,
+    color: "red",
+    fontSize: 16,
+  },
+  info: {
+    fontSize: 18,
   },
 });

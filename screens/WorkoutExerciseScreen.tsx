@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -9,40 +9,59 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-import { loadExercise } from "../redux/actions";
+import { loadExercise, setProgress } from "../redux/actions";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Video, AVPlaybackStatus } from "expo-av";
+import { InitialExercisesState } from "../models/interfaces";
 
 const deviceWidth = Dimensions.get("window").width;
 
-const WorkoutExerciseScreen = ({ navigation, route }) => {
+const WorkoutExerciseScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const { currentExercise, exercises } = useSelector(
     (state) => state.exercises
   );
 
-  console.log(currentExercise.video);
-  const [isPlaying, setIsPlaying] = useState(true);
-  let [index, setindex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  let [index, setindex] = useState<number>(0);
   const video = useRef(null);
 
-  const loadPrev = () => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => {},
+    });
+  }, [navigation]);
+
+  const loadPrev = (): void => {
     if (index > 0) {
       dispatch(loadExercise(index - 1));
       setindex(index - 1);
     }
   };
 
-  const loadNext = () => {
+  const loadNext = (): void => {
     if (index < exercises.length - 1) {
+      dispatch(setProgress(currentExercise.id, "skipped"));
       dispatch(loadExercise(index + 1));
       setindex(index + 1);
+    } else if (index === exercises.length - 1) {
+      navigation.navigate("Summary");
     }
   };
 
-  const handlePlayPause = () => {
+  const handlePlayPause = (): void => {
     setIsPlaying((prev) => !prev);
+  };
+
+  const handleComplete = (): void => {
+    if (index === exercises.length - 1) {
+      navigation.navigate("Summary");
+    } else {
+      dispatch(setProgress(currentExercise.id, "completed"));
+      dispatch(loadExercise(index));
+      setindex(index + 1);
+    }
   };
 
   return (
@@ -51,9 +70,17 @@ const WorkoutExerciseScreen = ({ navigation, route }) => {
         {currentExercise.title ? currentExercise.title : "Get Ready"}
       </Text>
       <View style={styles.controlsContainer}>
-        <TouchableOpacity onPress={loadPrev}>
+        <TouchableOpacity
+          disabled={!currentExercise.title || index == 1}
+          onPress={loadPrev}
+        >
           <MaterialIcons
-            style={styles.buttonPrev}
+            style={[
+              styles.buttonPrev,
+              !currentExercise.title || index == 1
+                ? styles.buttonNone
+                : styles.buttonPrev,
+            ]}
             name="skip-previous"
             size={24}
             color="#aa01fe"
@@ -66,10 +93,7 @@ const WorkoutExerciseScreen = ({ navigation, route }) => {
           duration={currentExercise.duration ? currentExercise.duration : 5}
           size={110}
           colors={"#fe4081"}
-          onComplete={() => {
-            dispatch(loadExercise(index));
-            setindex(index + 1);
-          }}
+          onComplete={handleComplete}
         >
           {({ remainingTime, animatedColor }) => (
             <Animated.Text style={{ color: animatedColor, fontSize: 35 }}>
@@ -126,7 +150,6 @@ const styles = StyleSheet.create({
   },
   controlsContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
     alignItems: "center",
     maxWidth: deviceWidth,
   },
@@ -145,5 +168,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#aa01fe",
     borderRadius: 10,
+  },
+  buttonNone: {
+    color: "transparent",
+    borderColor: "transparent",
   },
 });

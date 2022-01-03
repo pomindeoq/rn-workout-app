@@ -1,14 +1,21 @@
 import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
+import * as interfaces from "../models/interfaces";
 import Exercise from "./Exercise";
 
-const Workout = ({ workout }) => {
+interface WorkoutProps {
+  workout: interfaces.Workout;
+}
+
+const Workout = ({ workout }: WorkoutProps) => {
   return (
     <View style={[styles.center, styles.item]}>
       <Text style={styles.title}>{workout.title}</Text>
       <FlatList
         data={workout.exercises}
-        renderItem={(exercise) => <Exercise exercise={exercise.item} />}
+        renderItem={(exercise) => (
+          <Exercise showImage={true} exercise={exercise.item} />
+        )}
         keyExtractor={(item) => item.id}
       />
     </View>
