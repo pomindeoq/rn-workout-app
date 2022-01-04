@@ -12,16 +12,15 @@ import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { loadExercise, setProgress } from "../redux/actions";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Video, AVPlaybackStatus } from "expo-av";
-import { InitialExercisesState } from "../models/interfaces";
+import { Exercise, InitialExercisesState } from "../models/interfaces";
+import WorkoutVideo from "../components/WorkoutVideo";
 
 const deviceWidth = Dimensions.get("window").width;
 
 const WorkoutExerciseScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
-  const { currentExercise, exercises } = useSelector(
-    (state) => state.exercises
-  );
+  const { currentExercise, exercises }: any =
+    useSelector<InitialExercisesState>((state) => state.exercises);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   let [index, setindex] = useState<number>(0);
@@ -62,6 +61,10 @@ const WorkoutExerciseScreen = ({ navigation }: any) => {
       dispatch(loadExercise(index));
       setindex(index + 1);
     }
+  };
+
+  const leaveWorkout = (): void => {
+    navigation.navigate("Summary");
   };
 
   return (
@@ -110,12 +113,10 @@ const WorkoutExerciseScreen = ({ navigation }: any) => {
           />
         </TouchableOpacity>
       </View>
-      <Video
-        ref={video}
-        style={styles.video}
-        source={{ uri: currentExercise.video }}
-        shouldPlay={true}
-        isLooping={true}
+      <WorkoutVideo
+        isPlaying={isPlaying}
+        onLeave={leaveWorkout}
+        videoUri={currentExercise.video}
       />
       <TouchableOpacity onPress={handlePlayPause}>
         {isPlaying ? (
@@ -143,10 +144,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
-  },
-  video: {
-    width: deviceWidth,
-    height: 200,
   },
   controlsContainer: {
     flexDirection: "row",

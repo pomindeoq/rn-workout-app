@@ -32,7 +32,13 @@ const WorkoutScreen = ({ route, navigation }: any) => {
         renderItem={(workout) => <Workout workout={workout.item} />}
         keyExtractor={(item) => item.title}
       />
-      <OnScreenButton title="Start Workout" onPress={startWorkout} />
+      <OnScreenButton
+        color="#aa01fe"
+        borderColor="#aa01fe"
+        textColor="white"
+        title="Start Workout"
+        onPress={startWorkout}
+      />
     </View>
   );
 };

@@ -11,14 +11,29 @@ const deviceWidth = Dimensions.get("window").width;
 
 interface OnScreenButtonProps {
   title: string;
+  color: string;
+  textColor: string;
+  borderColor: string;
   onPress: () => void;
 }
 
-const OnScreenButton = ({ title, onPress }: OnScreenButtonProps) => {
+const OnScreenButton = ({
+  title,
+  onPress,
+  textColor,
+  color,
+  borderColor,
+}: OnScreenButtonProps) => {
   return (
     <View style={styles.buttonContainer}>
-      <TouchableOpacity onPress={onPress} style={styles.buttonStyle}>
-        <Text style={styles.buttonText}>{title}</Text>
+      <TouchableOpacity
+        onPress={onPress}
+        style={[
+          styles.buttonStyle,
+          { backgroundColor: color, borderColor: borderColor },
+        ]}
+      >
+        <Text style={[styles.buttonText, { color: textColor }]}>{title}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -38,16 +53,15 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     margin: 5,
-    backgroundColor: "#aa01fe",
     borderRadius: 8,
     height: 50,
-    width: deviceWidth - 40,
+    width: deviceWidth - 50,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
+    borderWidth: 2,
   },
   buttonText: {
-    color: "white",
     fontSize: 16,
   },
 });

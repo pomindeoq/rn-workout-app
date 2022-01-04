@@ -45,7 +45,13 @@ const WorkoutSummaryScreen = ({ navigation }: any) => {
         )}
         keyExtractor={(item) => item.title}
       />
-      <OnScreenButton title="Save & Continue" onPress={handleSaveAndContinue} />
+      <OnScreenButton
+        title="Save & Continue"
+        onPress={handleSaveAndContinue}
+        color="#aa01fe"
+        borderColor="#aa01fe"
+        textColor="white"
+      />
     </View>
   );
 };
