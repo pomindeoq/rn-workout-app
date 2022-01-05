@@ -9,7 +9,6 @@ export interface Workout {
   exercises: Exercise[];
   muscle_group: MuscleGroup;
 }
-
 export interface Exercise {
   id: string;
   title: string;
