@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Animated, StyleSheet, Dimensions } from "react-native";
 import { useDispatch } from "react-redux";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-import { loadExercise, setProgress } from "../redux/actions";
+import { loadExercise } from "../redux/actions";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Exercise } from "../models/interfaces";
@@ -28,18 +28,27 @@ const Player = ({
 }: PlayerProps) => {
   const dispatch = useDispatch();
   let [index, setindex] = useState<number>(0);
+  console.log(index);
 
   const loadPrev = (): void => {
     if (index > 0) {
-      dispatch(loadExercise(index - 1));
+      dispatch(
+        loadExercise(
+          index - 1,
+          currentExercise.progress,
+          parseInt(currentExercise.id)
+        )
+      );
       setindex(index - 1);
     }
   };
 
   const loadNext = (): void => {
     if (index < exercises.length - 1) {
-      dispatch(setProgress(parseInt(currentExercise.id), "skipped"));
-      dispatch(loadExercise(index + 1));
+      //dispatch(setProgress(parseInt(currentExercise.id), "skipped"));
+      dispatch(
+        loadExercise(index + 1, "skipped", parseInt(currentExercise.id))
+      );
       setindex(index + 1);
     } else if (index === exercises.length - 1) {
       navigation.navigate("Summary");
@@ -54,8 +63,8 @@ const Player = ({
     if (index === exercises.length - 1) {
       navigation.navigate("Summary");
     } else {
-      dispatch(setProgress(parseInt(currentExercise.id), "completed"));
-      dispatch(loadExercise(index));
+      //dispatch(setProgress(parseInt(currentExercise.id), "completed"));
+      dispatch(loadExercise(index, "completed", parseInt(currentExercise.id)));
       setindex(index + 1);
     }
   };

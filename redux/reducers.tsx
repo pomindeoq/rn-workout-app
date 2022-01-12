@@ -65,17 +65,22 @@ export function exercisesReducer(
     case LOAD_EXERCISE:
       return {
         ...state,
-        currentExercise: state.exercises[action.exerciseIndex],
-      };
-    case SET_PROGRESS:
-      return {
-        ...state,
         exercises: state.exercises.map((exercise: Exercise) =>
           exercise.id === action.id
             ? { ...exercise, progress: action.progress }
             : exercise
         ),
+        currentExercise: state.exercises[action.exerciseIndex],
       };
+    // case SET_PROGRESS:
+    //   return {
+    //     ...state,
+    //     exercises: state.exercises.map((exercise: Exercise) =>
+    //       exercise.id === action.id
+    //         ? { ...exercise, progress: action.progress }
+    //         : exercise
+    //     ),
+    //   };
     default:
       return state;
   }

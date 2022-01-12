@@ -43,17 +43,23 @@ export const saveExercises = (exercises: Exercise[]) => {
   };
 };
 
-export const loadExercise = (exerciseIndex: number) => {
+export const loadExercise = (
+  exerciseIndex: number,
+  progress: string,
+  id: number
+) => {
   return {
     type: LOAD_EXERCISE,
     exerciseIndex,
+    progress,
+    id,
   };
 };
 
-export const setProgress = (id: number, progress: string) => {
-  return {
-    type: SET_PROGRESS,
-    id,
-    progress,
-  };
-};
+// export const setProgress = (id: number, progress: string) => {
+//   return {
+//     type: SET_PROGRESS,
+//     id,
+//     progress,
+//   };
+// };
